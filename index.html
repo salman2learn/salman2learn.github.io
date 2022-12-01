@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>And miles to go ...</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">And miles to go ...</a></h1>
+                <nav><ul>
+                    <li><a href="/category/iot.html">IoT</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/cloud-cutting-wyze-lock-via-home-assistant.html">Cloud-cutting: Wyze lock via Home Assistant</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2022-11-29T00:00:00-06:00">
+                Published: Tue 29 November 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/salman2learn.html">salman2learn</a>
+        </address>
+<p>In <a href="/category/iot.html">IoT</a>.</p>
+<p>tags: <a href="/tag/wyze-lock.html">wyze lock</a> <a href="/tag/mqtt.html">mqtt</a> <a href="/tag/zigbee.html">zigbee</a> <a href="/tag/zigbee2mqtt.html">zigbee2mqtt</a> </p>
+</footer><!-- /.post-info --><p><img src="assets/image-20221130210631441.png" alt="image-20221130210631441" style="zoom:50%;" /></p>
+<p><strong>Prereq:</strong></p>
+<ul>
+<li>Wyze app for initial setup</li>
+<li>Zigbee Adapter e.g. CC2652 (Sonoff Zigbee 3.0)</li>
+<li>Zigbee2mqtt (e.g. running in a container)</li>
+</ul>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Install wyze lock and setup/pair with gateway and wyze app as normal.</li>
+<li>Put this code in zigbee container in this path: /app/data/wyzelock-converter.js   (or do it via volume on host)</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span> <span class="nx">fz</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;zigbee-herdsman-converters/converters/fromZigbee&#39;</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">tz</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;zigbee-herdsman-converters/converters/toZigbee&#39;</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">exposes</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;zigbee-herdsman-converters/lib/exposes&#39;</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">reporting</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;zigbee-herdsman-converters/lib/reporting&#39;</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">e</span> <span class="o">=</span> <span class="nx">exposes</span><span class="p">.</span><span class="nx">presets</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">definition</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">zigbeeModel</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;Ford&#39;</span><span class="p">],</span>
+    <span class="nx">model</span><span class="o">:</span> <span class="s1">&#39;Ford&#39;</span><span class="p">,</span>
+    <span class="nx">vendor</span><span class="o">:</span> <span class="s1">&#39;Yunding&#39;</span><span class="p">,</span>
+    <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Wyze Lock&#39;</span><span class="p">,</span>
+    <span class="nx">fromZigbee</span><span class="o">:</span> <span class="p">[</span><span class="nx">fz</span><span class="p">.</span><span class="nx">lock</span><span class="p">,</span> <span class="nx">fz</span><span class="p">.</span><span class="nx">lock_operation_event</span><span class="p">,</span> <span class="nx">fz</span><span class="p">.</span><span class="nx">battery</span><span class="p">],</span>
+    <span class="nx">toZigbee</span><span class="o">:</span> <span class="p">[</span><span class="nx">tz</span><span class="p">.</span><span class="nx">lock</span><span class="p">],</span>
+    <span class="nx">meta</span><span class="o">:</span> <span class="p">{</span><span class="nx">configureKey</span><span class="o">:</span> <span class="mf">1</span><span class="p">,</span> <span class="nx">options</span><span class="o">:</span> <span class="p">{</span><span class="nx">disableDefaultResponse</span><span class="o">:</span> <span class="kc">true</span><span class="p">}},</span>
+    <span class="nx">configure</span><span class="o">:</span> <span class="k">async</span> <span class="p">(</span><span class="nx">device</span><span class="p">,</span> <span class="nx">coordinatorEndpoint</span><span class="p">,</span> <span class="nx">logger</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+        <span class="kd">const</span> <span class="nx">endpoint</span> <span class="o">=</span> <span class="nx">device</span><span class="p">.</span><span class="nx">endpoints</span><span class="p">[</span><span class="mf">0</span><span class="p">];</span>
+        <span class="k">await</span> <span class="nx">reporting</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">endpoint</span><span class="p">,</span> <span class="nx">coordinatorEndpoint</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;closuresDoorLock&#39;</span><span class="p">,</span> <span class="s1">&#39;genPowerCfg&#39;</span><span class="p">]);</span>
+        <span class="k">await</span> <span class="nx">reporting</span><span class="p">.</span><span class="nx">lockState</span><span class="p">(</span><span class="nx">endpoint</span><span class="p">);</span>
+        <span class="k">await</span> <span class="nx">reporting</span><span class="p">.</span><span class="nx">batteryPercentageRemaining</span><span class="p">(</span><span class="nx">endpoint</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">exposes</span><span class="o">:</span> <span class="p">[</span><span class="nx">e</span><span class="p">.</span><span class="nx">lock</span><span class="p">(),</span> <span class="nx">e</span><span class="p">.</span><span class="nx">battery</span><span class="p">()],</span>
+<span class="p">};</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">definition</span><span class="p">;</span>
+</code></pre></div>
+
+<ol>
+<li>In the same folder, edit configuration.yaml, adding these lines:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="nl">advanced</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">....</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">existing</span><span class="w"> </span><span class="n">lines</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="p">....</span><span class="w"></span>
+<span class="w">  </span><span class="nl">log_level</span><span class="p">:</span><span class="w"> </span><span class="n">debug</span><span class="w"></span>
+<span class="nl">external_converters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">wyzelock</span><span class="o">-</span><span class="n">converter</span><span class="p">.</span><span class="n">js</span><span class="w"></span>
+</code></pre></div>
+
+<ol>
+<li>Restart container</li>
+<li>Put zigbee in pairing mode via web ui, and wyze lock in pairing mode (button behind faceplate).</li>
+</ol>
+<p>The wyze gateway can be taken offline now.</p>
+<p>Above steps will make the lock appear in zigbee web ui. Go to zigbee web ui &gt; Dashboard and test lock/unlock function.</p>
+<p><img alt="Pasted image 20221130205219" src="assets/Pasted image 20221130205219.png"></p>
+<p><img alt="Pasted image 20221130205047" src="assets/Pasted image 20221130205047.png"></p>
+<p>Also, it will appear automatically in mqtt and home assistant (under devices configuration). For home assistant, just add it to home screen.</p>
+<p><img alt="Pasted image 20221130205141" src="assets/Pasted image 20221130205141.png"></p>
+<p>ref:</p>
+<ul>
+<li>https://www.zigbee2mqtt.io/advanced/support-new-devices/01_support_new_devices.html</li>
+<li>https://github.com/Koenkk/zigbee2mqtt/issues/3018#issuecomment-1165982160</li>
+</ul>
+<hr>
+<h3>MQTT comm</h3>
+<p>On mqtt broker, the unlock and lock events appear as:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">TOPIC</span><span class="o">=</span><span class="s2">&quot;zigbee2mqtt/0x123/#&quot;</span>
+<span class="k">while</span> true<span class="p">;</span> <span class="k">do</span>
+    <span class="nv">data</span><span class="o">=</span><span class="sb">`</span>mosquitto_sub -v -h <span class="si">${</span><span class="nv">MQTTSVR</span><span class="si">}</span> -C <span class="m">1</span> -t <span class="si">${</span><span class="nv">TOPIC</span><span class="si">}</span><span class="sb">`</span>
+    <span class="nb">echo</span> <span class="nv">$data</span>
+<span class="k">done</span>
+</code></pre></div>
+
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code><span class="err">zigbee</span><span class="mi">2</span><span class="err">mq</span><span class="kc">tt</span><span class="err">/</span><span class="mi">0</span><span class="err">x</span><span class="mi">123</span><span class="err">/se</span><span class="kc">t</span> <span class="err">UNLOCK</span>
+<span class="err">zigbee</span><span class="mi">2</span><span class="err">mq</span><span class="kc">tt</span><span class="err">/</span><span class="mi">0</span><span class="err">x</span><span class="mi">123</span> <span class="p">{</span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="nt">&quot;linkquality&quot;</span><span class="p">:</span><span class="mi">102</span><span class="p">,</span><span class="nt">&quot;lock_state&quot;</span><span class="p">:</span><span class="s2">&quot;unlocked&quot;</span><span class="p">,</span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="s2">&quot;UNLOCK&quot;</span><span class="p">}</span>
+<span class="err">zigbee</span><span class="mi">2</span><span class="err">mq</span><span class="kc">tt</span><span class="err">/</span><span class="mi">0</span><span class="err">x</span><span class="mi">123</span><span class="err">/se</span><span class="kc">t</span> <span class="err">LOCK</span>
+<span class="err">zigbee</span><span class="mi">2</span><span class="err">mq</span><span class="kc">tt</span><span class="err">/</span><span class="mi">0</span><span class="err">x</span><span class="mi">123</span> <span class="p">{</span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="nt">&quot;linkquality&quot;</span><span class="p">:</span><span class="mi">99</span><span class="p">,</span><span class="nt">&quot;lock_state&quot;</span><span class="p">:</span><span class="s2">&quot;locked&quot;</span><span class="p">,</span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="s2">&quot;LOCK&quot;</span><span class="p">}</span>
+</code></pre></div>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://salmanzg.wordpress.com/">Prev blog</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://www.linkedin.com/in/salmanzg">Linkedin</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
