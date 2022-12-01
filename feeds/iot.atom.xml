@@ -4,7 +4,7 @@
 &lt;ul&gt;
 &lt;li&gt;Wyze app for initial setup&lt;/li&gt;
 &lt;li&gt;Zigbee Adapter e.g. CC2652 (Sonoff Zigbee 3.0)&lt;/li&gt;
-&lt;li&gt;Zigbee2mqtt (e.g. running in a container)&lt;/li&gt;
+&lt;li&gt;Zigbee2mqtt (e.g. &lt;a href="content/container-zigbee2mqtt.md"&gt;running in a container&lt;/a&gt;)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Steps:&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
