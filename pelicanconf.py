@@ -3,6 +3,7 @@ SITENAME = 'And miles to go ...'
 SITEURL = ''
 
 PATH = 'content'
+STATIC_PATHS = ['assets']
 
 TIMEZONE = 'US/Central'
 
@@ -16,14 +17,10 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'https://getpelican.com/'),
-         ('Python.org', 'https://www.python.org/'),
-         ('Jinja2', 'https://palletsprojects.com/p/jinja/'),
-         ('You can modify those links in your config file', '#'),)
+LINKS = (('Prev blog', 'https://salmanzg.wordpress.com/'),)
 
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+SOCIAL = (('Linkedin', 'https://www.linkedin.com/in/salmanzg'),)
 
 DEFAULT_PAGINATION = 10
 

@@ -1,6 +1,8 @@
-11/29/2022
-
-### Cloud-cutting: Wyze lock via Home Assistant
+Title: Cloud-cutting: Wyze lock via Home Assistant
+Date: 2022-11-29 
+Category: IoT
+Tags: wyze lock, mqtt, zigbee, zigbee2mqtt
+Summary: Using wyze lock without wyze cloud
 
 **Prereq:**
 
@@ -57,7 +59,16 @@ The wyze gateway can be taken offline now.
 
 Above steps will make the lock appear in zigbee web ui. Go to zigbee web ui > Dashboard and test lock/unlock function.
 
+![Pasted image 20221130205219](assets/Pasted image 20221130205219.png)
+
+![Pasted image 20221130205047](assets/Pasted image 20221130205047.png)
+
+
+
 Also, it will appear automatically in mqtt and home assistant (under devices configuration). For home assistant, just add it to home screen.
+
+![Pasted image 20221130205141](assets/Pasted image 20221130205141.png)
+
 
 ref:
 
