@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Zigbee2Mqtt Container</title>
+        <link rel="stylesheet" href="https://salman2learn.github.io/theme/css/main.css" />
+        <link href="https://salman2learn.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="And miles to go ... Atom Feed" />
+        <meta name="description" content="Setting up zigbee2mqtt bridge" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://salman2learn.github.io/">And miles to go ...</a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://salman2learn.github.io/category/iot.html">IoT</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://salman2learn.github.io/zigbee2mqtt-container.html" rel="bookmark"
+           title="Permalink to Zigbee2Mqtt Container">Zigbee2Mqtt Container</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2022-01-03T00:00:00-06:00">
+                Published: Mon 03 January 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://salman2learn.github.io/author/salman2learn.html">salman2learn</a>
+        </address>
+<p>In <a href="https://salman2learn.github.io/category/iot.html">IoT</a>.</p>
+<p>tags: <a href="https://salman2learn.github.io/tag/mqtt.html">mqtt</a> <a href="https://salman2learn.github.io/tag/zigbee.html">zigbee</a> <a href="https://salman2learn.github.io/tag/zigbee2mqtt.html">zigbee2mqtt</a> </p>
+</footer><!-- /.post-info -->      <p><strong>Requires:</strong></p>
+<p>zigbee dongle.
+https://www.zigbee2mqtt.io/guide/adapters/#recommended
+CC2652 usb dongle e.g. Sonoff Zigbee 3.0 (do not buy CC2531)</p>
+<p>lsusb: 
+<code>Bus 003 Device 005: ..... Silicon Labs CP210x UART Bridge</code></p>
+<p><strong>docker-compose:</strong></p>
+<div class="highlight"><pre><span></span><code>version: <span class="s1">&#39;3.8&#39;</span>
+
+volumes:
+  zigbee2mqtt_data:
+
+services:
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    restart: unless-stopped
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - zigbee2mqtt_data:/app/data
+      - /run/udev:/run/udev:ro
+    ports:
+      - <span class="m">8081</span>:8081
+    environment:
+      - <span class="nv">TZ</span><span class="o">=</span>America/Chicago
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+</code></pre></div>
+
+<p><strong>First device:</strong></p>
+<p>Paired ikea tradfri switch with it. Took few mins (and dev appear/disappear), and then zigbee2mqtt showed the switch as paired.</p>
+<p>Enable homeassistant boolean in zigbee2mqtt yaml, after which it zigbee2mqtt published info about switch in mqtt. That mqtt discovery message was picked up home assistant and appeared as a device in MQTT integration. The friendly name configured in zigbee2mqtt web frontend also appeared in home assistant.</p>
+<hr>
+<p><strong>Zigbee Architecture Notes:</strong></p>
+<p><img src="assets/image-20221130213858245.png" alt="image-20221130213858245" style="zoom:50%;" /></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Coordinator</th>
+<th>Router</th>
+<th>End-Device</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Network role</td>
+<td>Administrator</td>
+<td>Signal Repeater, Range Extender</td>
+<td>Leaf node</td>
+</tr>
+<tr>
+<td>Primary Purpose</td>
+<td>Administration, Security, Bridge to TCP/IP network</td>
+<td>IoT Device</td>
+<td>IoT Device</td>
+</tr>
+<tr>
+<td>Cardinality</td>
+<td>One per network</td>
+<td>Multiple</td>
+<td>Multiple</td>
+</tr>
+<tr>
+<td>Communication</td>
+<td>Talks to multiple devices</td>
+<td>Talks to multiple devices</td>
+<td>To one router or coordinator</td>
+</tr>
+<tr>
+<td>Power Source</td>
+<td>Powered</td>
+<td>Powered</td>
+<td>Battery Powered</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>Zigbee hub e.g. phillips hue bridge</td>
+<td>Bulb</td>
+<td>Wyze lock</td>
+</tr>
+<tr>
+<td>Range</td>
+<td></td>
+<td>10-20 m</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://salmanzg.wordpress.com/">Prev blog</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://salman2learn.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.linkedin.com/in/salmanzg">Linkedin</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
