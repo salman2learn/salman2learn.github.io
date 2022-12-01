@@ -38,34 +38,14 @@
 <p>In <a href="https://salman2learn.github.io/category/networking.html">Networking</a>.</p>
 <p>tags: <a href="https://salman2learn.github.io/tag/security.html">security</a> <a href="https://salman2learn.github.io/tag/dmz.html">dmz</a> <a href="https://salman2learn.github.io/tag/vpn.html">vpn</a> <a href="https://salman2learn.github.io/tag/noni.html">noni</a> </p>
 </footer><!-- /.post-info -->      <h4>Normally:</h4>
-<div class="highlight"><pre><span></span><code><span class="n">flowchart</span> <span class="n">LR</span>
-
-<span class="n">x</span><span class="p">[</span><span class="n">Outside</span> <span class="n">Browser</span> <span class="n">http</span><span class="o">://</span><span class="n">www</span><span class="p">.</span><span class="n">mydomain</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="mi">8012</span><span class="p">]</span> <span class="o">--</span> <span class="n">port</span> <span class="n">open</span> <span class="mi">8012</span> <span class="o">--&gt;</span> <span class="n">Router</span>
-
-<span class="n">subgraph</span> <span class="n">Home</span>
-    <span class="n">Router</span> <span class="o">--</span> <span class="n">sends</span> <span class="n">port</span> <span class="mi">8012</span> <span class="n">request</span> <span class="n">to</span><span class="o">--&gt;</span> <span class="n">l</span><span class="p">[</span><span class="n">Laptop</span> <span class="n">with</span> <span class="n">HTML</span> <span class="n">website</span><span class="p">]</span>
-<span class="kd">end</span>
-</code></pre></div>
-
+<p><img alt="image-20221130221811670" src="assets/image-20221130221811670.png"></p>
 <p>Issues:</p>
 <ul>
 <li>You have opened port on your router (it is like leaving a door open of home)</li>
 <li>You must secure this open port heavily. If someone hacks your application (Website), the hacker will be inside your home network</li>
 </ul>
 <h4>Cloudflare solution:</h4>
-<div class="highlight"><pre><span></span><code><span class="n">flowchart</span> <span class="n">TD</span>
-<span class="n">b</span><span class="p">[</span><span class="n">Outside</span> <span class="n">Browser</span><span class="p">]</span> <span class="o">-</span><span class="mf">-3.</span> <span class="n">Browsing</span> <span class="n">request</span> <span class="o">--&gt;</span> <span class="n">c</span><span class="p">[</span><span class="n">Cloudflare</span><span class="p">]</span>
-
-<span class="n">subgraph</span> <span class="n">Home</span>
-    <span class="n">Router</span>
-     <span class="n">l</span><span class="p">[</span><span class="n">Laptop</span> <span class="n">with</span> <span class="n">HTML</span> <span class="n">website</span><span class="p">]</span>
-    <span class="n">cd</span><span class="p">[</span><span class="n">Cloudflared</span><span class="p">]</span>
-<span class="n">end</span>
-<span class="n">cd</span> <span class="o">--</span> <span class="mf">1.</span> <span class="n">initial</span> <span class="n">connection</span> <span class="o">--&gt;</span> <span class="n">c</span>
-<span class="n">cd</span> <span class="o">&lt;--</span> <span class="mf">2.</span> <span class="n">onwards</span> <span class="n">bidirectional</span> <span class="n">via</span> <span class="n">websocket</span> <span class="o">--&gt;</span> <span class="n">c</span>
-<span class="n">cd</span> <span class="o">--</span> <span class="mf">4.</span> <span class="n">send</span> <span class="n">outside</span> <span class="n">traffic</span> <span class="n">to</span> <span class="o">--&gt;</span> <span class="n">l</span>
-</code></pre></div>
-
+<p><img alt="image-20221130221829649" src="assets/image-20221130221829649.png"></p>
 <p>Notes: </p>
 <ul>
 <li>Cloudflared (a daemon) needs to run on your home network on some pc</li>

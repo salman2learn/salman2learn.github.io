@@ -1,33 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>And miles to go ... - Networking</title><link href="https://salman2learn.github.io/" rel="alternate"></link><link href="https://salman2learn.github.io/feeds/networking.atom.xml" rel="self"></link><id>https://salman2learn.github.io/</id><updated>2022-09-25T00:00:00-05:00</updated><entry><title>Cloudflare Tunnels</title><link href="https://salman2learn.github.io/cloudflare-tunnels.html" rel="alternate"></link><published>2022-09-25T00:00:00-05:00</published><updated>2022-09-25T00:00:00-05:00</updated><author><name>salman2learn</name></author><id>tag:salman2learn.github.io,2022-09-25:/cloudflare-tunnels.html</id><summary type="html">&lt;p&gt;Exposing a website on home laptop to public without port forwarding (instead using cloudflare tunnels)&lt;/p&gt;</summary><content type="html">&lt;h4&gt;Normally:&lt;/h4&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;flowchart&lt;/span&gt; &lt;span class="n"&gt;LR&lt;/span&gt;
-
-&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Outside&lt;/span&gt; &lt;span class="n"&gt;Browser&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mydomain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8012&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="n"&gt;open&lt;/span&gt; &lt;span class="mi"&gt;8012&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Router&lt;/span&gt;
-
-&lt;span class="n"&gt;subgraph&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt;
-    &lt;span class="n"&gt;Router&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;sends&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="mi"&gt;8012&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Laptop&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="n"&gt;HTML&lt;/span&gt; &lt;span class="n"&gt;website&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="kd"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
+&lt;p&gt;&lt;img alt="image-20221130221811670" src="assets/image-20221130221811670.png"&gt;&lt;/p&gt;
 &lt;p&gt;Issues:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;You have opened port on your router (it is like leaving a door open of home)&lt;/li&gt;
 &lt;li&gt;You must secure this open port heavily. If someone hacks your application (Website), the hacker will be inside your home network&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4&gt;Cloudflare solution:&lt;/h4&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;flowchart&lt;/span&gt; &lt;span class="n"&gt;TD&lt;/span&gt;
-&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Outside&lt;/span&gt; &lt;span class="n"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;-3.&lt;/span&gt; &lt;span class="n"&gt;Browsing&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Cloudflare&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-
-&lt;span class="n"&gt;subgraph&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt;
-    &lt;span class="n"&gt;Router&lt;/span&gt;
-     &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Laptop&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="n"&gt;HTML&lt;/span&gt; &lt;span class="n"&gt;website&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-    &lt;span class="n"&gt;cd&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Cloudflared&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="n"&gt;end&lt;/span&gt;
-&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="mf"&gt;1.&lt;/span&gt; &lt;span class="n"&gt;initial&lt;/span&gt; &lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
-&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;--&lt;/span&gt; &lt;span class="mf"&gt;2.&lt;/span&gt; &lt;span class="n"&gt;onwards&lt;/span&gt; &lt;span class="n"&gt;bidirectional&lt;/span&gt; &lt;span class="n"&gt;via&lt;/span&gt; &lt;span class="n"&gt;websocket&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
-&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="mf"&gt;4.&lt;/span&gt; &lt;span class="n"&gt;send&lt;/span&gt; &lt;span class="n"&gt;outside&lt;/span&gt; &lt;span class="n"&gt;traffic&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
+&lt;p&gt;&lt;img alt="image-20221130221829649" src="assets/image-20221130221829649.png"&gt;&lt;/p&gt;
 &lt;p&gt;Notes: &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Cloudflared (a daemon) needs to run on your home network on some pc&lt;/li&gt;
