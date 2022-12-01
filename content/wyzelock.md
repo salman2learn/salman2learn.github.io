@@ -1,14 +1,16 @@
 Title: Cloud-cutting: Wyze lock via Home Assistant
-Date: 2022-11-29 
+Date: 2022-11-29
 Category: IoT
 Tags: wyze lock, mqtt, zigbee, zigbee2mqtt
 Summary: Using wyze lock without wyze cloud
+
+<img src="assets/image-20221130210631441.png" alt="image-20221130210631441" style="zoom:50%;" />
 
 **Prereq:**
 
 - Wyze app for initial setup
 - Zigbee Adapter e.g. CC2652 (Sonoff Zigbee 3.0)
-- Zigbee2mqtt (e.g. running in a container)
+- Zigbee2mqtt (e.g. [running in a container](content/container-zigbee2mqtt.md))
 
 **Steps:**
 
@@ -63,12 +65,9 @@ Above steps will make the lock appear in zigbee web ui. Go to zigbee web ui > Da
 
 ![Pasted image 20221130205047](assets/Pasted image 20221130205047.png)
 
-
-
 Also, it will appear automatically in mqtt and home assistant (under devices configuration). For home assistant, just add it to home screen.
 
 ![Pasted image 20221130205141](assets/Pasted image 20221130205141.png)
-
 
 ref:
 
