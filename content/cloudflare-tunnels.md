@@ -6,15 +6,7 @@ Summary: Exposing a website on home laptop to public without port forwarding (in
 
 #### Normally:
 
-```mermaid
-flowchart LR
-
-x[Outside Browser http://www.mydomain.com:8012] -- port open 8012 --> Router
-
-subgraph Home
-	Router -- sends port 8012 request to--> l[Laptop with HTML website]
-end
-```
+![image-20221130221811670](assets/image-20221130221811670.png)
 
 Issues:
 
@@ -25,19 +17,7 @@ Issues:
 
 #### Cloudflare solution:
 
-```mermaid
-flowchart TD
-b[Outside Browser] --3. Browsing request --> c[Cloudflare]
-
-subgraph Home
-	Router
-	 l[Laptop with HTML website]
-	cd[Cloudflared]
-end
-cd -- 1. initial connection --> c
-cd <-- 2. onwards bidirectional via websocket --> c
-cd -- 4. send outside traffic to --> l
-```
+![image-20221130221829649](assets/image-20221130221829649.png)
 
 Notes: 
 

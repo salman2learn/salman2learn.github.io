@@ -10,7 +10,7 @@ Summary: Using wyze lock without wyze cloud
 
 - Wyze app for initial setup
 - Zigbee Adapter e.g. CC2652 (Sonoff Zigbee 3.0)
-- Zigbee2mqtt (e.g. [running in a container](content/container-zigbee2mqtt.md))
+- Zigbee2mqtt (e.g. [running in a container](container-zigbee2mqtt.md))
 
 **Steps:**
 
