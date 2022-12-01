@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>And miles to go ... - Networking</title>
+        <link rel="stylesheet" href="https://salman2learn.github.io/theme/css/main.css" />
+        <link href="https://salman2learn.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="And miles to go ... Atom Feed" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://salman2learn.github.io/">And miles to go ...</a></h1>
+                <nav><ul>
+                    <li><a href="https://salman2learn.github.io/category/iot.html">IoT</a></li>
+                    <li class="active"><a href="https://salman2learn.github.io/category/networking.html">Networking</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://salman2learn.github.io/cloudflare-tunnels.html">Cloudflare Tunnels</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2022-09-25T00:00:00-05:00">
+                Published: Sun 25 September 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://salman2learn.github.io/author/salman2learn.html">salman2learn</a>
+        </address>
+<p>In <a href="https://salman2learn.github.io/category/networking.html">Networking</a>.</p>
+<p>tags: <a href="https://salman2learn.github.io/tag/security.html">security</a> <a href="https://salman2learn.github.io/tag/dmz.html">dmz</a> <a href="https://salman2learn.github.io/tag/vpn.html">vpn</a> <a href="https://salman2learn.github.io/tag/noni.html">noni</a> </p>
+</footer><!-- /.post-info --><h4>Normally:</h4>
+<div class="highlight"><pre><span></span><code><span class="n">flowchart</span> <span class="n">LR</span>
+
+<span class="n">x</span><span class="p">[</span><span class="n">Outside</span> <span class="n">Browser</span> <span class="n">http</span><span class="o">://</span><span class="n">www</span><span class="p">.</span><span class="n">mydomain</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="mi">8012</span><span class="p">]</span> <span class="o">--</span> <span class="n">port</span> <span class="n">open</span> <span class="mi">8012</span> <span class="o">--&gt;</span> <span class="n">Router</span>
+
+<span class="n">subgraph</span> <span class="n">Home</span>
+    <span class="n">Router</span> <span class="o">--</span> <span class="n">sends</span> <span class="n">port</span> <span class="mi">8012</span> <span class="n">request</span> <span class="n">to</span><span class="o">--&gt;</span> <span class="n">l</span><span class="p">[</span><span class="n">Laptop</span> <span class="n">with</span> <span class="n">HTML</span> <span class="n">website</span><span class="p">]</span>
+<span class="kd">end</span>
+</code></pre></div>
+
+<p>Issues:</p>
+<ul>
+<li>You have opened port on your router (it is like leaving a door open of home)</li>
+<li>You must secure this open port heavily. If someone hacks your application (Website), the hacker will be inside your home network</li>
+</ul>
+<h4>Cloudflare solution:</h4>
+<div class="highlight"><pre><span></span><code><span class="n">flowchart</span> <span class="n">TD</span>
+<span class="n">b</span><span class="p">[</span><span class="n">Outside</span> <span class="n">Browser</span><span class="p">]</span> <span class="o">-</span><span class="mf">-3.</span> <span class="n">Browsing</span> <span class="n">request</span> <span class="o">--&gt;</span> <span class="n">c</span><span class="p">[</span><span class="n">Cloudflare</span><span class="p">]</span>
+
+<span class="n">subgraph</span> <span class="n">Home</span>
+    <span class="n">Router</span>
+     <span class="n">l</span><span class="p">[</span><span class="n">Laptop</span> <span class="n">with</span> <span class="n">HTML</span> <span class="n">website</span><span class="p">]</span>
+    <span class="n">cd</span><span class="p">[</span><span class="n">Cloudflared</span><span class="p">]</span>
+<span class="n">end</span>
+<span class="n">cd</span> <span class="o">--</span> <span class="mf">1.</span> <span class="n">initial</span> <span class="n">connection</span> <span class="o">--&gt;</span> <span class="n">c</span>
+<span class="n">cd</span> <span class="o">&lt;--</span> <span class="mf">2.</span> <span class="n">onwards</span> <span class="n">bidirectional</span> <span class="n">via</span> <span class="n">websocket</span> <span class="o">--&gt;</span> <span class="n">c</span>
+<span class="n">cd</span> <span class="o">--</span> <span class="mf">4.</span> <span class="n">send</span> <span class="n">outside</span> <span class="n">traffic</span> <span class="n">to</span> <span class="o">--&gt;</span> <span class="n">l</span>
+</code></pre></div>
+
+<p>Notes: </p>
+<ul>
+<li>Cloudflared (a daemon) needs to run on your home network on some pc</li>
+<li>On routers, going outside traffic is allowed always. Incoming traffic is disallowed.</li>
+<li>Cloudflared outbound traffic is allowed</li>
+<li>Websocket is different from http, because it start from one side, but after starting, two-way traffic is allowed</li>
+<li>For #3: you need a domain name</li>
+<li>For #4: you need to tell cloudflared to send any incoming traffic to your laptop</li>
+</ul>
+<h3>Steps</h3>
+<ol>
+<li>
+<p>Get your own domain name or free dns name.</p>
+</li>
+<li>
+<p>Create a cloudflare account &gt; Home &gt; Add a site &gt; mysite.com &gt; Choose free plan &gt; DNS continue &gt; Add records later + Confirm</p>
+</li>
+<li>Note down nameservers from cloudflare:<ol>
+<li>clark.ns.cloudflare.com</li>
+<li>liz.ns.cloudflare.com</li>
+</ol>
+</li>
+<li>On your domain registrar &gt; Login &gt; Set  Nameserver to above (cloudflare) nameservers.</li>
+<li>Back to Cloudflare &gt; Check nameservers &gt; Finish later &gt; Check nameservers  (it will be done in few mins - dont wait for it)</li>
+<li>Creating cloudflare tunnel</li>
+<li>Access &gt; Launch zero trust &gt; Access &gt; Tunnels &gt; Create new tunnel e.g. mysite tunnel &gt; Note the secret code (Tunnel token)</li>
+<li>Go to portainer &gt; Add new stack &gt; use the docker compose script with the tunnel token as env variable</li>
+<li>As soon as portainer stack is ready, cloudflare will show it. Press next</li>
+<li>Choose a subdomain e.g. www</li>
+<li>Choose your laptop website e.g. http://192.168.1.56:8000   for myhomewebsite e.g. hosted using python3 -m http.server  </li>
+<li>Now browse from anywhere: www.mysite.com</li>
+</ol>
+<p><strong>docker-compose script:</strong></p>
+<div class="highlight"><pre><span></span><code>version: <span class="s2">&quot;2.1&quot;</span>
+
+volumes:
+  cloudflared_config:
+
+services:
+  heimdall:
+    image: cloudflare/cloudflared
+    container_name: cloudflared
+    environment:
+      - <span class="nv">PUID</span><span class="o">=</span><span class="m">1000</span>
+      - <span class="nv">PGID</span><span class="o">=</span><span class="m">1000</span>
+      - <span class="nv">TZ</span><span class="o">=</span>America/Chicago
+    volumes:
+      - cloudflared_config:/etc/cloudflared
+    command: tunnel run
+    environment:
+      - <span class="nv">TUNNEL_TOKEN</span><span class="o">=</span><span class="si">${</span><span class="nv">TUNNEL_TOKEN</span><span class="si">}</span>
+    restart: unless-stopped
+</code></pre></div>
+
+<p>Volume may not be correct. May be /usr/local/etc/cloudflared  based on: https://github.com/cloudflare/cloudflared/blob/master/config/configuration.go</p>
+<p>Direct docker run:</p>
+<div class="highlight"><pre><span></span><code>docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token eyBlahBlahBlah123
+</code></pre></div>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://salmanzg.wordpress.com/">Prev blog</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://salman2learn.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.linkedin.com/in/salmanzg">Linkedin</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

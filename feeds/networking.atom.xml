@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>And miles to go ... - Networking</title><link href="https://salman2learn.github.io/" rel="alternate"></link><link href="https://salman2learn.github.io/feeds/networking.atom.xml" rel="self"></link><id>https://salman2learn.github.io/</id><updated>2022-09-25T00:00:00-05:00</updated><entry><title>Cloudflare Tunnels</title><link href="https://salman2learn.github.io/cloudflare-tunnels.html" rel="alternate"></link><published>2022-09-25T00:00:00-05:00</published><updated>2022-09-25T00:00:00-05:00</updated><author><name>salman2learn</name></author><id>tag:salman2learn.github.io,2022-09-25:/cloudflare-tunnels.html</id><summary type="html">&lt;p&gt;Exposing a website on home laptop to public without port forwarding (instead using cloudflare tunnels)&lt;/p&gt;</summary><content type="html">&lt;h4&gt;Normally:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;flowchart&lt;/span&gt; &lt;span class="n"&gt;LR&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Outside&lt;/span&gt; &lt;span class="n"&gt;Browser&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mydomain&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8012&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="n"&gt;open&lt;/span&gt; &lt;span class="mi"&gt;8012&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Router&lt;/span&gt;
+
+&lt;span class="n"&gt;subgraph&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt;
+    &lt;span class="n"&gt;Router&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;sends&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="mi"&gt;8012&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Laptop&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="n"&gt;HTML&lt;/span&gt; &lt;span class="n"&gt;website&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="kd"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Issues:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;You have opened port on your router (it is like leaving a door open of home)&lt;/li&gt;
+&lt;li&gt;You must secure this open port heavily. If someone hacks your application (Website), the hacker will be inside your home network&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Cloudflare solution:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;flowchart&lt;/span&gt; &lt;span class="n"&gt;TD&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Outside&lt;/span&gt; &lt;span class="n"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;-3.&lt;/span&gt; &lt;span class="n"&gt;Browsing&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Cloudflare&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;subgraph&lt;/span&gt; &lt;span class="n"&gt;Home&lt;/span&gt;
+    &lt;span class="n"&gt;Router&lt;/span&gt;
+     &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Laptop&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="n"&gt;HTML&lt;/span&gt; &lt;span class="n"&gt;website&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;cd&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Cloudflared&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;end&lt;/span&gt;
+&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="mf"&gt;1.&lt;/span&gt; &lt;span class="n"&gt;initial&lt;/span&gt; &lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;--&lt;/span&gt; &lt;span class="mf"&gt;2.&lt;/span&gt; &lt;span class="n"&gt;onwards&lt;/span&gt; &lt;span class="n"&gt;bidirectional&lt;/span&gt; &lt;span class="n"&gt;via&lt;/span&gt; &lt;span class="n"&gt;websocket&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="mf"&gt;4.&lt;/span&gt; &lt;span class="n"&gt;send&lt;/span&gt; &lt;span class="n"&gt;outside&lt;/span&gt; &lt;span class="n"&gt;traffic&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Notes: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cloudflared (a daemon) needs to run on your home network on some pc&lt;/li&gt;
+&lt;li&gt;On routers, going outside traffic is allowed always. Incoming traffic is disallowed.&lt;/li&gt;
+&lt;li&gt;Cloudflared outbound traffic is allowed&lt;/li&gt;
+&lt;li&gt;Websocket is different from http, because it start from one side, but after starting, two-way traffic is allowed&lt;/li&gt;
+&lt;li&gt;For #3: you need a domain name&lt;/li&gt;
+&lt;li&gt;For #4: you need to tell cloudflared to send any incoming traffic to your laptop&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Steps&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Get your own domain name or free dns name.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create a cloudflare account &amp;gt; Home &amp;gt; Add a site &amp;gt; mysite.com &amp;gt; Choose free plan &amp;gt; DNS continue &amp;gt; Add records later + Confirm&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Note down nameservers from cloudflare:&lt;ol&gt;
+&lt;li&gt;clark.ns.cloudflare.com&lt;/li&gt;
+&lt;li&gt;liz.ns.cloudflare.com&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;On your domain registrar &amp;gt; Login &amp;gt; Set  Nameserver to above (cloudflare) nameservers.&lt;/li&gt;
+&lt;li&gt;Back to Cloudflare &amp;gt; Check nameservers &amp;gt; Finish later &amp;gt; Check nameservers  (it will be done in few mins - dont wait for it)&lt;/li&gt;
+&lt;li&gt;Creating cloudflare tunnel&lt;/li&gt;
+&lt;li&gt;Access &amp;gt; Launch zero trust &amp;gt; Access &amp;gt; Tunnels &amp;gt; Create new tunnel e.g. mysite tunnel &amp;gt; Note the secret code (Tunnel token)&lt;/li&gt;
+&lt;li&gt;Go to portainer &amp;gt; Add new stack &amp;gt; use the docker compose script with the tunnel token as env variable&lt;/li&gt;
+&lt;li&gt;As soon as portainer stack is ready, cloudflare will show it. Press next&lt;/li&gt;
+&lt;li&gt;Choose a subdomain e.g. www&lt;/li&gt;
+&lt;li&gt;Choose your laptop website e.g. http://192.168.1.56:8000   for myhomewebsite e.g. hosted using python3 -m http.server  &lt;/li&gt;
+&lt;li&gt;Now browse from anywhere: www.mysite.com&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;docker-compose script:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;version: &lt;span class="s2"&gt;&amp;quot;2.1&amp;quot;&lt;/span&gt;
+
+volumes:
+  cloudflared_config:
+
+services:
+  heimdall:
+    image: cloudflare/cloudflared
+    container_name: cloudflared
+    environment:
+      - &lt;span class="nv"&gt;PUID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1000&lt;/span&gt;
+      - &lt;span class="nv"&gt;PGID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1000&lt;/span&gt;
+      - &lt;span class="nv"&gt;TZ&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;America/Chicago
+    volumes:
+      - cloudflared_config:/etc/cloudflared
+    command: tunnel run
+    environment:
+      - &lt;span class="nv"&gt;TUNNEL_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;TUNNEL_TOKEN&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+    restart: unless-stopped
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Volume may not be correct. May be /usr/local/etc/cloudflared  based on: https://github.com/cloudflare/cloudflared/blob/master/config/configuration.go&lt;/p&gt;
+&lt;p&gt;Direct docker run:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token eyBlahBlahBlah123
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Networking"></category><category term="security"></category><category term="dmz"></category><category term="vpn"></category><category term="noni"></category></entry></feed>
