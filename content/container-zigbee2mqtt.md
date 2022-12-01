@@ -4,6 +4,8 @@ Category: IoT
 Tags: mqtt, zigbee, zigbee2mqtt
 Summary: Setting up zigbee2mqtt bridge
 
+![Zigbee2MQTT](assets/logo.png)
+
 **Requires:**
 
 zigbee dongle.
