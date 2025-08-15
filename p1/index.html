@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Form</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 90%; /* Fluid width */
+            width: 500px;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="container bg-white p-8 rounded-lg shadow-xl border border-gray-200">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">PWA Data Entry Form</h1>
+        <p class="text-gray-600 mb-6 text-center">Enter a name and upload an image.</p>
+
+        <form id="dataForm" class="space-y-6">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter full name"
+                    required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
+                >
+            </div>
+
+            <div>
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image:</label>
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    class="mt-1 block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-md file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100 transition duration-150 ease-in-out"
+                >
+                <div id="imagePreview" class="mt-4 flex justify-center items-center w-full h-48 bg-gray-50 border border-dashed border-gray-300 rounded-md overflow-hidden">
+                    <span class="text-gray-400 text-sm">Image preview here</span>
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+            >
+                Submit
+            </button>
+        </form>
+
+        <div id="messageBox" class="mt-6 p-4 rounded-md text-sm text-center hidden" role="alert"></div>
+    </div>
+
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        const dataForm = document.getElementById('dataForm');
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('imagePreview');
+        const messageBox = document.getElementById('messageBox');
+
+        // Function to display messages in the custom message box
+        function showMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700', 'bg-blue-100', 'text-blue-700');
+
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            } else { // info
+                messageBox.classList.add('bg-blue-100', 'text-blue-700');
+            }
+            messageBox.classList.remove('hidden');
+        }
+
+        // Handle image file selection and display preview
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview" class="max-w-full max-h-full object-contain rounded-md">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = `<span class="text-gray-400 text-sm">Image preview here</span>`;
+            }
+        });
+
+        // Handle form submission
+        dataForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = document.getElementById('name').value;
+            const imageFile = document.getElementById('image').files[0];
+
+            if (!name.trim()) {
+                showMessage('Please enter a name.', 'error');
+                return;
+            }
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageDataUrl = e.target.result;
+                    console.log('Form Submitted!');
+                    console.log('Name:', name);
+                    console.log('Image Data URL (Base64):', imageDataUrl.substring(0, 50) + '...'); // Log first 50 chars for brevity
+                    showMessage('Form data captured! Check the console for details.', 'success');
+                    dataForm.reset(); // Clear the form
+                    imagePreview.innerHTML = `<span class="text-gray-400 text-sm">Image preview here</span>`;
+                };
+                reader.onerror = function() {
+                    showMessage('Error reading image file.', 'error');
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                console.log('Form Submitted!');
+                console.log('Name:', name);
+                console.log('No image selected.');
+                showMessage('Form data captured! No image selected. Check the console for details.', 'success');
+                dataForm.reset(); // Clear the form
+                imagePreview.innerHTML = `<span class="text-gray-400 text-sm">Image preview here</span>`;
+            }
+        });
+    </script>
+</body>
+</html>
