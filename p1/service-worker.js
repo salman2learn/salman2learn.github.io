@@ -17,6 +17,17 @@ self.addEventListener('install', event => {
     );
 });
 
+let deferredInstallEvent;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallEvent = e;
+});
+
+btnInstall.addEventListener('click', () => {
+    if (deferredInstallEvent) {
+        deferredInstallEvent.prompt();
+    }
+});
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
